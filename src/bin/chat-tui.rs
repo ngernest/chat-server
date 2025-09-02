@@ -138,8 +138,7 @@ async fn main() -> anyhow::Result<()> {
             f.render_widget(msgs, chunks[0]);
 
             // render input box
-            let widget = textarea.widget();
-            f.render_widget(widget, chunks[1]);
+            f.render_widget(&textarea, chunks[1]);
         });
 
         match draw_res {

@@ -9,10 +9,13 @@ async fn main() -> anyhow::Result<()> {
     let server = TcpListener::bind("127.0.0.1:42069").await?;
     loop {
         let (tcp, _) = server.accept().await?;
+        
+        // Spawn a separate task to handle each connection
         tokio::spawn(handle_user(tcp));
     }
 }
 
+/// Takes a TcpStream and allows users to chat 
 async fn handle_user(mut tcp: TcpStream) -> anyhow::Result<()> {
     let (reader, writer) = tcp.split();
     let mut stream = FramedRead::new(reader, LinesCodec::new());

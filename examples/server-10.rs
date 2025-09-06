@@ -13,12 +13,23 @@ const HELP_MSG: &str = include_str!("shared/help-02.txt");
 struct Names(Arc<Mutex<HashSet<String>>>);
 
 impl Names {
+    /// We have to wrap a HashSet inside `Arc<Mutex<...>>` 
+    /// to share mutable state between threads
     fn new() -> Self {
         Self(Arc::new(Mutex::new(HashSet::new())))
     }
+    
+    /// Returns true if name was inserted, i.e. the name is unique
     fn insert(&self, name: String) -> bool {
         self.0.lock().unwrap().insert(name)
     }
+
+    /// Removes an element from the HashSet
+    fn remove(&self, name: &String) -> bool {
+        self.0.lock().unwrap().remove(name)
+    }
+
+    /// Returns unique name
     fn get_unique(&self) -> String {
         let mut name = random_name();
         let mut guard = self.0.lock().unwrap();
